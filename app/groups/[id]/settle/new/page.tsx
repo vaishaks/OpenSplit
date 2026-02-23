@@ -1,9 +1,9 @@
 import { requireAuthSession } from "@/components/require-auth";
 import { AddSettlementForm } from "@/components/add-settlement-form";
 
-export default async function NewSettlementPage({ params }: { params: { id: string } }) {
+export default async function NewSettlementPage({ params }: { params: Promise<{ id: string }> }) {
   await requireAuthSession();
-  const { id } = await Promise.resolve(params);
+  const { id } = await params;
 
   return (
     <section className="mx-auto max-w-2xl">

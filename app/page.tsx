@@ -5,10 +5,10 @@ import { AuthButtons } from "@/components/auth-buttons";
 export default async function HomePage({
   searchParams
 }: {
-  searchParams: { invite?: string } | Promise<{ invite?: string }>;
+  searchParams: Promise<{ invite?: string }>;
 }) {
   const session = await auth();
-  const { invite } = await Promise.resolve(searchParams);
+  const { invite } = await searchParams;
   const callbackUrl = invite ? `/invite/${invite}` : "/dashboard";
 
   return (

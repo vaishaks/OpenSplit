@@ -5,12 +5,12 @@ import { getGroupBalances } from "@/server/group-balances";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { groupId: string } }
+  { params }: { params: Promise<{ groupId: string }> }
 ) {
   const requestId = request.headers.get("x-request-id") ?? undefined;
 
   try {
-    const { groupId } = params;
+    const { groupId } = await params;
     const user = await requireUser();
     await requireActiveMembership(groupId, user.id);
 

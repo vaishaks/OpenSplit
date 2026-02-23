@@ -8,12 +8,12 @@ import { createSettlement } from "@/server/settlement-service";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { groupId: string } }
+  { params }: { params: Promise<{ groupId: string }> }
 ) {
   const requestId = request.headers.get("x-request-id") ?? undefined;
 
   try {
-    const { groupId } = params;
+    const { groupId } = await params;
     const user = await requireUser();
     await requireActiveMembership(groupId, user.id);
 
@@ -46,12 +46,12 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { groupId: string } }
+  { params }: { params: Promise<{ groupId: string }> }
 ) {
   const requestId = request.headers.get("x-request-id") ?? undefined;
 
   try {
-    const { groupId } = params;
+    const { groupId } = await params;
     const user = await requireUser();
     await requireActiveMembership(groupId, user.id);
 

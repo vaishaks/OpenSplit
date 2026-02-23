@@ -17,12 +17,6 @@ declare module "next-auth" {
   }
 }
 
-declare module "next-auth/jwt" {
-  interface JWT {
-    userId?: string;
-  }
-}
-
 const testCredentialsSchema = z.object({
   email: z.string().email(),
   name: z.string().min(1).max(100).optional()
@@ -72,6 +66,9 @@ if (process.env.OPENSPLIT_TEST_MODE === "true") {
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers,
+  secret:
+    process.env.AUTH_SECRET ??
+    (process.env.NODE_ENV === "production" ? undefined : "opensplit-dev-only-secret"),
   session: {
     strategy: "jwt"
   },
@@ -106,23 +103,26 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return true;
     },
     async jwt({ token, user }) {
+      const mutableToken = token as typeof token & { userId?: string };
+
       if (user?.id) {
-        token.userId = user.id;
+        mutableToken.userId = user.id;
       }
 
-      if (!token.userId && token.email) {
+      if (!mutableToken.userId && token.email) {
         const dbUser = await prisma.user.findUnique({
           where: { email: token.email },
           select: { id: true }
         });
-        token.userId = dbUser?.id;
+        mutableToken.userId = dbUser?.id;
       }
 
-      return token;
+      return mutableToken;
     },
     async session({ session, token }) {
-      if (session.user && token.userId) {
-        session.user.id = token.userId;
+      const tokenWithUserId = token as typeof token & { userId?: unknown };
+      if (session.user && typeof tokenWithUserId.userId === "string") {
+        session.user.id = tokenWithUserId.userId;
       }
       return session;
     }

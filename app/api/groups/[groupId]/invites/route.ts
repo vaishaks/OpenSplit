@@ -8,12 +8,12 @@ import { HttpError } from "@/server/errors";
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { groupId: string } }
+  { params }: { params: Promise<{ groupId: string }> }
 ) {
   const requestId = request.headers.get("x-request-id") ?? undefined;
 
   try {
-    const { groupId } = params;
+    const { groupId } = await params;
     const user = await requireUser();
     await requireGroupOwner(groupId, user.id);
 
