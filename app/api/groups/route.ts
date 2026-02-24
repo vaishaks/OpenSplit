@@ -6,6 +6,8 @@ import { parseBody } from "@/server/request";
 import { ok, fail } from "@/server/http";
 import { getGroupBalances } from "@/server/group-balances";
 import { logInfo } from "@/server/logger";
+import { summarizeCounterparty } from "@/server/group-summary";
+import { createHeroSeed } from "@/lib/visual-seed";
 
 export async function POST(request: NextRequest) {
   const requestId = request.headers.get("x-request-id") ?? undefined;
@@ -82,6 +84,13 @@ export async function GET(request: NextRequest) {
       memberships.map(async (membership) => {
         const balances = await getGroupBalances(membership.groupId);
         const mine = balances.balances.find((item) => item.member?.userId === user.id);
+        const counterpartySummary = mine
+          ? summarizeCounterparty({
+              myMemberId: mine.memberId,
+              balances: balances.balances,
+              suggestions: balances.suggestions
+            })
+          : null;
 
         return {
           id: membership.group.id,
@@ -89,7 +98,11 @@ export async function GET(request: NextRequest) {
           currencyCode: membership.group.currencyCode,
           isArchived: membership.group.isArchived,
           myNetCents: mine?.netCents ?? 0,
-          role: membership.role
+          role: membership.role,
+          memberCount: balances.memberCount,
+          counterpartySummary,
+          lastActivityAt: balances.lastActivityAt,
+          heroSeed: createHeroSeed(membership.group.id, membership.group.name)
         };
       })
     );

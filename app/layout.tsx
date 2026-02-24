@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Space_Grotesk, Fraunces } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers";
-import { TopNav } from "@/components/top-nav";
+import { AppShell } from "@/components/app-shell";
 
 const headingFont = Space_Grotesk({
   subsets: ["latin"],
@@ -26,8 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${headingFont.variable} ${bodyFont.variable}`}>
       <body className="min-h-screen bg-zinc-50 text-ink">
         <Providers>
-          <TopNav />
-          <main className="mx-auto w-full max-w-5xl px-4 py-6">{children}</main>
+          <AppShell>{children}</AppShell>
         </Providers>
       </body>
     </html>

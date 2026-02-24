@@ -5,6 +5,7 @@ import { createExpenseSchema } from "@/server/schemas";
 import { parseBody } from "@/server/request";
 import { ok, fail } from "@/server/http";
 import { createExpense } from "@/server/expense-service";
+import { computeExpenseImpact } from "@/server/expense-impact";
 
 export async function GET(
   request: NextRequest,
@@ -15,7 +16,7 @@ export async function GET(
   try {
     const { groupId } = await params;
     const user = await requireUser();
-    await requireActiveMembership(groupId, user.id);
+    const membership = await requireActiveMembership(groupId, user.id);
 
     const page = Number.parseInt(request.nextUrl.searchParams.get("page") ?? "1", 10);
     const limit = Math.min(
@@ -57,7 +58,18 @@ export async function GET(
     ]);
 
     return ok({
-      items,
+      items: items.map((item) => ({
+        ...item,
+        ...computeExpenseImpact({
+          amountCents: item.amountCents,
+          paidByMemberId: item.paidByMemberId,
+          participants: item.participants.map((participant) => ({
+            memberId: participant.memberId,
+            amountCents: participant.amountCents
+          })),
+          currentMemberId: membership.id
+        })
+      })),
       page,
       limit,
       total

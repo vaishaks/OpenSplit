@@ -3,6 +3,9 @@ import { prisma } from "@/server/db";
 import { requireUser, requireActiveMembership } from "@/server/guards";
 import { ok, fail } from "@/server/http";
 import { HttpError } from "@/server/errors";
+import { getGroupBalances } from "@/server/group-balances";
+import { createHeroSeed } from "@/lib/visual-seed";
+import { summarizeCounterparty } from "@/server/group-summary";
 
 export async function GET(
   request: NextRequest,
@@ -13,35 +16,52 @@ export async function GET(
   try {
     const { groupId } = await params;
     const user = await requireUser();
-    await requireActiveMembership(groupId, user.id);
+    const membership = await requireActiveMembership(groupId, user.id);
 
-    const group = await prisma.group.findUnique({
-      where: { id: groupId },
-      include: {
-        members: {
-          where: { status: "ACTIVE" },
-          include: {
-            user: {
-              select: {
-                id: true,
-                name: true,
-                email: true,
-                avatarUrl: true
+    const [group, balances] = await Promise.all([
+      prisma.group.findUnique({
+        where: { id: groupId },
+        include: {
+          members: {
+            where: { status: "ACTIVE" },
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  email: true,
+                  avatarUrl: true
+                }
               }
+            },
+            orderBy: {
+              createdAt: "asc"
             }
-          },
-          orderBy: {
-            createdAt: "asc"
           }
         }
-      }
-    });
+      }),
+      getGroupBalances(groupId)
+    ]);
 
     if (!group) {
       throw new HttpError(404, "Group not found");
     }
 
-    return ok({ group });
+    const counterpartySummary = summarizeCounterparty({
+      myMemberId: membership.id,
+      balances: balances.balances,
+      suggestions: balances.suggestions
+    });
+
+    return ok({
+      group: {
+        ...group,
+        memberCount: balances.memberCount,
+        activityRange: balances.activityRange,
+        heroSeed: createHeroSeed(group.id, group.name),
+        counterpartySummary
+      }
+    });
   } catch (error) {
     return fail(error, requestId);
   }

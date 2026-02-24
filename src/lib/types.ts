@@ -1,3 +1,5 @@
+export type CounterpartySummaryDirection = "OWE" | "OWED" | "SETTLED";
+
 export type GroupSummary = {
   id: string;
   name: string;
@@ -5,6 +7,14 @@ export type GroupSummary = {
   isArchived: boolean;
   myNetCents: number;
   role: "OWNER" | "MEMBER";
+  memberCount: number;
+  counterpartySummary: {
+    name: string;
+    direction: CounterpartySummaryDirection;
+    amountCents: number;
+  } | null;
+  lastActivityAt: string | null;
+  heroSeed: string;
 };
 
 export type GroupMemberView = {
@@ -27,6 +37,17 @@ export type GroupDetail = {
   isArchived: boolean;
   inviteCode: string;
   members: GroupMemberView[];
+  memberCount: number;
+  activityRange: {
+    start: string | null;
+    end: string | null;
+  };
+  heroSeed: string;
+  counterpartySummary: {
+    name: string;
+    direction: CounterpartySummaryDirection;
+    amountCents: number;
+  };
 };
 
 export type BalanceItem = {
@@ -57,6 +78,8 @@ export type ExpenseFeedItem = {
   currencyCode: string;
   splitType: "EVEN" | "CUSTOM" | "PERCENTAGE" | "SHARES";
   spentAt: string;
+  myDeltaCents: number;
+  myDirection: "LENT" | "BORROWED" | "NEUTRAL";
   paidByMember: {
     id: string;
     user: {

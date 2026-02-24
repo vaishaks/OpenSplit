@@ -48,7 +48,21 @@ export async function getGroupBalances(groupId: string) {
     ])
   );
 
+  const activityTimestamps = [
+    ...expenses.map((item) => item.spentAt.getTime()),
+    ...settlements.map((item) => item.paidAt.getTime())
+  ].sort((a, b) => a - b);
+
+  const activityRange =
+    activityTimestamps.length === 0
+      ? { start: null, end: null }
+      : {
+          start: new Date(activityTimestamps[0]).toISOString(),
+          end: new Date(activityTimestamps[activityTimestamps.length - 1]).toISOString()
+        };
+
   return {
+    memberCount: members.length,
     balances: nets.map((item) => ({
       ...item,
       member: memberById.get(item.memberId)
@@ -57,6 +71,8 @@ export async function getGroupBalances(groupId: string) {
       ...item,
       fromMember: memberById.get(item.fromMemberId),
       toMember: memberById.get(item.toMemberId)
-    }))
+    })),
+    activityRange,
+    lastActivityAt: activityRange.end
   };
 }

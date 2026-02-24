@@ -7,11 +7,23 @@ import { fetchJson } from "@/lib/fetcher";
 import { parseMoneyToCents } from "@/lib/money";
 import type { GroupDetail } from "@/lib/types";
 
-export function AddSettlementForm({ groupId }: { groupId: string }) {
+export function AddSettlementForm({
+  groupId,
+  initialFromMemberId,
+  initialToMemberId,
+  initialAmountCents
+}: {
+  groupId: string;
+  initialFromMemberId?: string;
+  initialToMemberId?: string;
+  initialAmountCents?: number;
+}) {
   const router = useRouter();
-  const [fromMemberId, setFromMemberId] = useState("");
-  const [toMemberId, setToMemberId] = useState("");
-  const [amount, setAmount] = useState("");
+  const [fromMemberId, setFromMemberId] = useState(initialFromMemberId ?? "");
+  const [toMemberId, setToMemberId] = useState(initialToMemberId ?? "");
+  const [amount, setAmount] = useState(
+    initialAmountCents ? (initialAmountCents / 100).toFixed(2) : ""
+  );
   const [note, setNote] = useState("");
 
   const groupQuery = useQuery<{ group: GroupDetail }>({
