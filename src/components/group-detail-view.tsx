@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import type { Route } from "next";
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchJson } from "@/lib/fetcher";
 import type {
@@ -16,8 +15,6 @@ import { formatMoney } from "@/lib/money";
 import { GroupHero } from "@/components/group-hero";
 import { ActivityTimeline } from "@/components/activity-timeline";
 import { FloatingActionBar } from "@/components/floating-action-bar";
-
-type TimelineMode = "SETTLE" | "EXPENSES";
 
 function formatDateRange(range: GroupDetail["activityRange"], fallbackIso: string) {
   const start = range.start ? new Date(range.start) : new Date(fallbackIso);
@@ -51,8 +48,6 @@ function summaryLine(group: GroupDetail) {
 }
 
 export function GroupDetailView({ groupId }: { groupId: string }) {
-  const [mode, setMode] = useState<TimelineMode>("SETTLE");
-
   const groupQuery = useQuery<{ group: GroupDetail }>({
     queryKey: ["group", groupId],
     queryFn: () => fetchJson(`/api/groups/${groupId}`)
@@ -110,34 +105,18 @@ export function GroupDetailView({ groupId }: { groupId: string }) {
       />
 
       <div className="bg-ui-bg px-4 pb-3 pt-4 lg:px-6">
-        <p className="text-[2rem] font-medium text-ui-ink">{summaryLine(group)}</p>
+        <p className="text-[1.5rem] font-medium text-ui-ink">{summaryLine(group)}</p>
 
         <div className="mt-4 flex gap-2 overflow-x-auto pb-1">
-          <button
-            type="button"
-            onClick={() => setMode("SETTLE")}
-            className={`rounded-xl border px-4 py-2 text-lg font-semibold whitespace-nowrap ${
-              mode === "SETTLE"
-                ? "border-transparent bg-[#f45d01] text-white"
-                : "border-ui-border bg-white text-ui-ink"
-            }`}
+          <Link
+            href={`/groups/${group.id}/settle/new` as Route}
+            className="rounded-xl border border-transparent bg-[#f45d01] px-4 py-2 text-base font-semibold text-white whitespace-nowrap"
           >
             Settle up
-          </button>
-          <button
-            type="button"
-            onClick={() => setMode("EXPENSES")}
-            className={`rounded-xl border px-4 py-2 text-lg font-semibold whitespace-nowrap ${
-              mode === "EXPENSES"
-                ? "border-transparent bg-[#f45d01] text-white"
-                : "border-ui-border bg-white text-ui-ink"
-            }`}
-          >
-            Expenses
-          </button>
+          </Link>
           <Link
             href={`/groups/${group.id}/balances` as Route}
-            className="rounded-xl border border-ui-border bg-white px-4 py-2 text-lg font-semibold text-ui-ink whitespace-nowrap"
+            className="rounded-xl border border-ui-border bg-white px-4 py-2 text-base font-semibold text-ui-ink whitespace-nowrap"
           >
             Balances
           </Link>
@@ -147,15 +126,12 @@ export function GroupDetailView({ groupId }: { groupId: string }) {
           currencyCode={group.currencyCode}
           expenses={expenses}
           settlements={settlements}
-          mode={mode}
         />
       </div>
 
       <FloatingActionBar
         primaryLabel="Add expense"
         primaryHref={`/groups/${group.id}/expenses/new` as Route}
-        secondaryLabel="Settle"
-        secondaryHref={`/groups/${group.id}/settle/new` as Route}
       />
     </section>
   );

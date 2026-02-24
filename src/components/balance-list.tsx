@@ -26,7 +26,7 @@ export function BalanceList({ balances, suggestions, currencyCode, groupId }: Ba
 
         return (
           <article key={balance.memberId} className="rounded-2xl border border-ui-border bg-white px-4 py-4">
-            <p className="text-[2rem] leading-tight text-ui-ink">
+            <p className="text-[1.35rem] leading-tight text-ui-ink">
               <strong>{name}</strong>{" "}
               {balance.netCents > 0 ? "gets back" : balance.netCents < 0 ? "owes" : "is settled up"}{" "}
               {balance.netCents === 0 ? null : (
@@ -39,17 +39,17 @@ export function BalanceList({ balances, suggestions, currencyCode, groupId }: Ba
 
             {suggestion ? (
               <div className="mt-3 rounded-xl bg-ui-surface px-3 py-3">
-                <p className="text-[1.8rem] text-ui-muted">
+                <p className="text-[1.1rem] text-ui-muted">
                   {(suggestion.fromMember?.name || suggestion.fromMember?.email || "Member")} owes{" "}
                   {formatMoney(suggestion.amountCents, currencyCode)}
                 </p>
                 <div className="mt-3 flex gap-3">
-                  <button type="button" className="rounded-xl border border-ui-border bg-white px-5 py-2 text-[1.7rem] font-semibold text-ui-ink">
+                  <button type="button" className="rounded-xl border border-ui-border bg-white px-5 py-2 text-base font-semibold text-ui-ink">
                     Remind...
                   </button>
                   <Link
                     href={`/groups/${groupId}/settle/new?fromMemberId=${suggestion.fromMemberId}&toMemberId=${suggestion.toMemberId}&amountCents=${suggestion.amountCents}` as Route}
-                    className="rounded-xl border border-ui-border bg-white px-5 py-2 text-[1.7rem] font-semibold text-ui-ink"
+                    className="rounded-xl border border-ui-border bg-white px-5 py-2 text-base font-semibold text-ui-ink"
                   >
                     Settle up
                   </Link>
@@ -60,7 +60,7 @@ export function BalanceList({ balances, suggestions, currencyCode, groupId }: Ba
         );
       })}
 
-      <aside className="mt-6 rounded-xl bg-ui-surface px-4 py-4 text-[1.75rem] text-ui-muted">
+      <aside className="mt-6 rounded-xl bg-ui-surface px-4 py-4 text-[1.05rem] text-ui-muted">
         Simplify debts is on, saving your group repayment steps.
       </aside>
     </section>

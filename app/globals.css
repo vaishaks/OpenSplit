@@ -45,7 +45,7 @@ body {
   max-width: 76rem;
   padding: 0;
   min-height: 100vh;
-  padding-bottom: 6.2rem;
+  padding-bottom: 5.4rem;
 }
 
 .app-bottom-nav {
@@ -65,28 +65,28 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 0.15rem;
-  padding: 0.72rem 0 0.7rem;
-  font-size: 0.92rem;
+  padding: 0.6rem 0 0.58rem;
+  font-size: 0.84rem;
   font-weight: 500;
 }
 
 .group-row {
   display: grid;
-  grid-template-columns: 3rem minmax(0, 1fr) auto;
+  grid-template-columns: 2.7rem minmax(0, 1fr) auto;
   align-items: center;
-  gap: 0.9rem;
-  padding: 1rem 0;
+  gap: 0.72rem;
+  padding: 0.8rem 0;
   border-bottom: 1px solid var(--ui-border);
 }
 
 .group-row-avatar {
   display: grid;
   place-items: center;
-  width: 3rem;
-  height: 3rem;
-  border-radius: 0.95rem;
+  width: 2.7rem;
+  height: 2.7rem;
+  border-radius: 0.8rem;
   color: white;
-  font-size: 1rem;
+  font-size: 0.92rem;
   font-weight: 700;
 }
 
@@ -113,21 +113,21 @@ body {
 .icon-chip {
   display: inline-grid;
   place-items: center;
-  width: 2.75rem;
-  height: 2.75rem;
+  width: 2.45rem;
+  height: 2.45rem;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.95);
   color: var(--ui-ink);
-  font-size: 1.2rem;
+  font-size: 1.05rem;
   box-shadow: 0 8px 22px rgba(10, 24, 39, 0.28);
 }
 
 .group-hero-title {
   position: relative;
   z-index: 1;
-  margin-top: 1.35rem;
-  margin-bottom: 0.7rem;
-  font-size: 2.35rem;
+  margin-top: 1.1rem;
+  margin-bottom: 0.55rem;
+  font-size: 1.95rem;
   line-height: 1.05;
   font-weight: 700;
 }
@@ -144,41 +144,41 @@ body {
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.4);
   background: rgba(11, 30, 34, 0.35);
-  padding: 0.34rem 0.78rem;
-  font-size: 0.95rem;
+  padding: 0.28rem 0.66rem;
+  font-size: 0.82rem;
   font-weight: 600;
 }
 
 .timeline-month {
-  margin: 1rem 0 0.5rem;
-  font-size: 1.1rem;
+  margin: 0.85rem 0 0.35rem;
+  font-size: 0.96rem;
   color: var(--ui-ink);
   font-weight: 700;
 }
 
 .timeline-row {
   display: grid;
-  grid-template-columns: 3.2rem 2.9rem minmax(0, 1fr) auto;
-  gap: 0.75rem;
+  grid-template-columns: 2.8rem 2.5rem minmax(0, 1fr) auto;
+  gap: 0.6rem;
   align-items: center;
-  padding: 0.45rem 0;
+  padding: 0.36rem 0;
 }
 
 .timeline-date {
-  font-size: 0.95rem;
+  font-size: 0.8rem;
   color: var(--ui-muted);
   line-height: 1.2;
-  width: 3rem;
+  width: 2.6rem;
 }
 
 .timeline-icon {
   display: grid;
   place-items: center;
-  width: 2.9rem;
-  height: 2.9rem;
+  width: 2.5rem;
+  height: 2.5rem;
   border-radius: 0.25rem;
   color: white;
-  font-size: 1.25rem;
+  font-size: 1.05rem;
 }
 
 @media (min-width: 1024px) {

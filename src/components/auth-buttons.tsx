@@ -2,7 +2,9 @@
 
 import { signIn, signOut, useSession } from "next-auth/react";
 
-export function AuthButtons({ callbackUrl = "/dashboard" }: { callbackUrl?: string }) {
+const postLoginPath = "/dashboard";
+
+export function AuthButtons() {
   const { data: session } = useSession();
 
   if (session?.user) {
@@ -21,7 +23,7 @@ export function AuthButtons({ callbackUrl = "/dashboard" }: { callbackUrl?: stri
     <div className="flex flex-col gap-2 sm:flex-row">
       <button
         type="button"
-        onClick={() => signIn("google", { callbackUrl })}
+        onClick={() => signIn("google", { callbackUrl: postLoginPath })}
         className="rounded-full bg-ink px-5 py-3 text-sm font-semibold text-white transition hover:bg-ink/90"
       >
         Continue with Google
@@ -33,7 +35,7 @@ export function AuthButtons({ callbackUrl = "/dashboard" }: { callbackUrl?: stri
             signIn("credentials", {
               email: "demo@opensplit.test",
               name: "Demo User",
-              callbackUrl
+              callbackUrl: postLoginPath
             })
           }
           className="rounded-full border border-ink/20 px-5 py-3 text-sm font-semibold text-ink transition hover:border-ink"

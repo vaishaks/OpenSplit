@@ -84,15 +84,15 @@ export function GroupsRail({
           <button
             type="button"
             onClick={() => setShowSearch((value) => !value)}
-            className="text-3xl text-ui-ink"
+            className="text-2xl text-ui-ink"
             aria-label="Toggle search"
           >
             🔍
           </button>
-          <Link href="/groups/new" className="text-2xl font-semibold text-ui-success">
+          <Link href="/groups/new" className="text-xl font-semibold text-ui-success">
             Create group
           </Link>
-          <span className="text-3xl text-ui-muted" aria-hidden="true">
+          <span className="text-2xl text-ui-muted" aria-hidden="true">
             ☰
           </span>
         </div>
@@ -103,12 +103,12 @@ export function GroupsRail({
               value={search}
               onChange={(event) => setSearch(event.target.value)}
               placeholder="Search groups"
-              className="w-full rounded-2xl border border-ui-border bg-white px-4 py-3 text-lg"
+              className="w-full rounded-2xl border border-ui-border bg-white px-4 py-3 text-base"
             />
           </label>
         ) : null}
 
-        <p className="mt-8 text-[2rem] font-semibold text-ui-ink">
+        <p className="mt-6 text-[1.45rem] font-semibold text-ui-ink">
           Overall, you {summary.verb}{" "}
           {summary.amount ? <span className={summary.className}>{summary.amount}</span> : null}
         </p>

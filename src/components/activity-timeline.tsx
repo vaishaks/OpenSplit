@@ -2,13 +2,10 @@ import { formatMoney } from "@/lib/money";
 import { seedToGradient } from "@/lib/visual-seed";
 import type { ExpenseFeedItem, SettlementFeedItem } from "@/lib/types";
 
-type TimelineMode = "SETTLE" | "EXPENSES";
-
 type TimelineProps = {
   currencyCode: string;
   expenses: ExpenseFeedItem[];
   settlements: SettlementFeedItem[];
-  mode: TimelineMode;
 };
 
 type TimelineItem = {
@@ -36,39 +33,10 @@ function toDateParts(isoString: string) {
 
 function buildItems(props: TimelineProps): TimelineItem[] {
   const expenseItems = props.expenses.map((expense) => {
-      const parts = toDateParts(expense.spentAt);
-      const paidByName = expense.paidByMember.user.name || expense.paidByMember.user.email;
+    const parts = toDateParts(expense.spentAt);
+    const paidByName = expense.paidByMember.user.name || expense.paidByMember.user.email;
 
-      if (expense.myDirection === "LENT") {
-        return {
-          id: expense.id,
-          timestamp: parts.timestamp,
-          dateLabel: `${parts.monthShort} ${parts.day}`,
-          monthLabel: parts.monthLong,
-          kind: "expense" as const,
-          title: expense.title,
-          subtitle: `${paidByName} paid ${formatMoney(expense.amountCents, props.currencyCode)}`,
-          tone: "positive" as const,
-          toneText: "you lent",
-          amountText: formatMoney(expense.myDeltaCents, props.currencyCode)
-        };
-      }
-
-      if (expense.myDirection === "BORROWED") {
-        return {
-          id: expense.id,
-          timestamp: parts.timestamp,
-          dateLabel: `${parts.monthShort} ${parts.day}`,
-          monthLabel: parts.monthLong,
-          kind: "expense" as const,
-          title: expense.title,
-          subtitle: `${paidByName} paid ${formatMoney(expense.amountCents, props.currencyCode)}`,
-          tone: "negative" as const,
-          toneText: "you borrowed",
-          amountText: formatMoney(Math.abs(expense.myDeltaCents), props.currencyCode)
-        };
-      }
-
+    if (expense.myDirection === "LENT") {
       return {
         id: expense.id,
         timestamp: parts.timestamp,
@@ -77,28 +45,55 @@ function buildItems(props: TimelineProps): TimelineItem[] {
         kind: "expense" as const,
         title: expense.title,
         subtitle: `${paidByName} paid ${formatMoney(expense.amountCents, props.currencyCode)}`,
-        tone: "neutral" as const
+        tone: "positive" as const,
+        toneText: "you lent",
+        amountText: formatMoney(expense.myDeltaCents, props.currencyCode)
       };
+    }
+
+    if (expense.myDirection === "BORROWED") {
+      return {
+        id: expense.id,
+        timestamp: parts.timestamp,
+        dateLabel: `${parts.monthShort} ${parts.day}`,
+        monthLabel: parts.monthLong,
+        kind: "expense" as const,
+        title: expense.title,
+        subtitle: `${paidByName} paid ${formatMoney(expense.amountCents, props.currencyCode)}`,
+        tone: "negative" as const,
+        toneText: "you borrowed",
+        amountText: formatMoney(Math.abs(expense.myDeltaCents), props.currencyCode)
+      };
+    }
+
+    return {
+      id: expense.id,
+      timestamp: parts.timestamp,
+      dateLabel: `${parts.monthShort} ${parts.day}`,
+      monthLabel: parts.monthLong,
+      kind: "expense" as const,
+      title: expense.title,
+      subtitle: `${paidByName} paid ${formatMoney(expense.amountCents, props.currencyCode)}`,
+      tone: "neutral" as const
+    };
   });
 
-  const settlementItems = props.mode === "SETTLE"
-    ? props.settlements.map((settlement) => {
-        const parts = toDateParts(settlement.paidAt);
-        const fromName = settlement.fromMember.user.name || settlement.fromMember.user.email;
-        const toName = settlement.toMember.user.name || settlement.toMember.user.email;
+  const settlementItems = props.settlements.map((settlement) => {
+    const parts = toDateParts(settlement.paidAt);
+    const fromName = settlement.fromMember.user.name || settlement.fromMember.user.email;
+    const toName = settlement.toMember.user.name || settlement.toMember.user.email;
 
-        return {
-          id: settlement.id,
-          timestamp: parts.timestamp,
-          dateLabel: `${parts.monthShort} ${parts.day}`,
-          monthLabel: parts.monthLong,
-          kind: "settlement" as const,
-          title: `${fromName} fully settled up with ${toName}`,
-          subtitle: formatMoney(settlement.amountCents, props.currencyCode),
-          tone: "neutral" as const
-        };
-      })
-    : [];
+    return {
+      id: settlement.id,
+      timestamp: parts.timestamp,
+      dateLabel: `${parts.monthShort} ${parts.day}`,
+      monthLabel: parts.monthLong,
+      kind: "settlement" as const,
+      title: `${fromName} fully settled up with ${toName}`,
+      subtitle: formatMoney(settlement.amountCents, props.currencyCode),
+      tone: "neutral" as const
+    };
+  });
 
   return [...expenseItems, ...settlementItems].sort((a, b) => b.timestamp - a.timestamp);
 }
@@ -107,7 +102,7 @@ export function ActivityTimeline(props: TimelineProps) {
   const items = buildItems(props);
 
   if (items.length === 0) {
-    return <p className="mt-6 text-[1.75rem] text-ui-muted">No activity yet.</p>;
+    return <p className="mt-6 text-base text-ui-muted">No activity yet.</p>;
   }
 
   let activeMonth = "";
@@ -127,15 +122,15 @@ export function ActivityTimeline(props: TimelineProps) {
                 {item.kind === "settlement" ? "⚖" : "🧾"}
               </div>
               <div className="min-w-0">
-                <p className="truncate text-[2.1rem] font-semibold leading-tight text-ui-ink">{item.title}</p>
-                <p className="truncate text-[1.8rem] text-ui-muted">{item.subtitle}</p>
+                <p className="truncate text-[1.35rem] font-semibold leading-tight text-ui-ink">{item.title}</p>
+                <p className="truncate text-[1.15rem] text-ui-muted">{item.subtitle}</p>
               </div>
               {item.amountText ? (
                 <div className="text-right">
-                  <p className={`text-[1.55rem] font-medium ${item.tone === "positive" ? "text-ui-success" : "text-ui-warn"}`}>
+                  <p className={`text-[1rem] font-medium ${item.tone === "positive" ? "text-ui-success" : "text-ui-warn"}`}>
                     {item.toneText}
                   </p>
-                  <p className={`text-[2.25rem] font-semibold leading-tight ${item.tone === "positive" ? "text-ui-success" : "text-ui-warn"}`}>
+                  <p className={`text-[1.45rem] font-semibold leading-tight ${item.tone === "positive" ? "text-ui-success" : "text-ui-warn"}`}>
                     {item.amountText}
                   </p>
                 </div>

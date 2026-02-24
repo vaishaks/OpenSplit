@@ -49,12 +49,12 @@ export function GroupListRow({ group }: { group: GroupSummary }) {
         <span>{group.name.slice(0, 1).toUpperCase()}</span>
       </div>
       <div className="min-w-0">
-        <p className="truncate text-[1.95rem] font-semibold leading-tight text-ui-ink">{group.name}</p>
-        <p className="mt-1 truncate text-[1.65rem] text-ui-muted">{summaryText(group)}</p>
+        <p className="truncate text-[1.4rem] font-semibold leading-tight text-ui-ink">{group.name}</p>
+        <p className="mt-1 truncate text-[1.1rem] text-ui-muted">{summaryText(group)}</p>
       </div>
       <div className="text-right">
-        <p className={`text-[1.4rem] font-medium ${status.className}`}>{status.label}</p>
-        <p className={`text-[2rem] font-semibold leading-tight ${status.className}`}>{status.value}</p>
+        <p className={`text-[0.9rem] font-medium ${status.className}`}>{status.label}</p>
+        <p className={`text-[1.35rem] font-semibold leading-tight ${status.className}`}>{status.value}</p>
       </div>
     </Link>
   );

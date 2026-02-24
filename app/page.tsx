@@ -1,15 +1,13 @@
-import Link from "next/link";
+import { redirect } from "next/navigation";
 import { auth } from "@/server/auth";
 import { AuthButtons } from "@/components/auth-buttons";
 
-export default async function HomePage({
-  searchParams
-}: {
-  searchParams: Promise<{ invite?: string }>;
-}) {
+export default async function HomePage() {
   const session = await auth();
-  const { invite } = await searchParams;
-  const callbackUrl = invite ? `/invite/${invite}` : "/dashboard";
+
+  if (session?.user) {
+    redirect("/dashboard");
+  }
 
   return (
     <section className="grid gap-8 py-8 md:grid-cols-[1.2fr_1fr] md:items-center">
@@ -24,15 +22,7 @@ export default async function HomePage({
           Track who paid, who shared, and what each person owes across roommates, trips, and events.
         </p>
         <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
-          <AuthButtons callbackUrl={callbackUrl} />
-          {session?.user ? (
-            <Link
-              href="/dashboard"
-              className="rounded-full border border-ink/20 px-5 py-3 text-sm font-semibold text-ink transition hover:border-ink"
-            >
-              Open Dashboard
-            </Link>
-          ) : null}
+          <AuthButtons />
         </div>
       </div>
       <div className="rounded-3xl bg-white p-5 shadow-card">
