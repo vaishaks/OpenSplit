@@ -1,5 +1,6 @@
 import { requireAuthSession } from "@/components/require-auth";
 import { AddSettlementForm } from "@/components/add-settlement-form";
+import { QuickSettleView } from "@/components/quick-settle-view";
 
 export default async function NewSettlementPage({
   params,
@@ -7,6 +8,7 @@ export default async function NewSettlementPage({
 }: {
   params: Promise<{ id: string }>;
   searchParams: Promise<{
+    mode?: string;
     fromMemberId?: string;
     toMemberId?: string;
     amountCents?: string;
@@ -17,15 +19,24 @@ export default async function NewSettlementPage({
   const query = await searchParams;
   const parsedAmount =
     typeof query.amountCents === "string" ? Number.parseInt(query.amountCents, 10) : undefined;
+  const manualMode =
+    query.mode === "manual" ||
+    Boolean(query.fromMemberId) ||
+    Boolean(query.toMemberId) ||
+    Boolean(query.amountCents);
 
   return (
     <section className="mx-auto max-w-2xl">
-      <AddSettlementForm
-        groupId={id}
-        initialFromMemberId={query.fromMemberId}
-        initialToMemberId={query.toMemberId}
-        initialAmountCents={Number.isFinite(parsedAmount) ? parsedAmount : undefined}
-      />
+      {manualMode ? (
+        <AddSettlementForm
+          groupId={id}
+          initialFromMemberId={query.fromMemberId}
+          initialToMemberId={query.toMemberId}
+          initialAmountCents={Number.isFinite(parsedAmount) ? parsedAmount : undefined}
+        />
+      ) : (
+        <QuickSettleView groupId={id} />
+      )}
     </section>
   );
 }

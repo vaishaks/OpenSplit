@@ -35,7 +35,9 @@ export function GroupHero({
       <h1 className="group-hero-title">{title}</h1>
       <div className="group-hero-meta">
         <span className="hero-pill">{dateLabel}</span>
-        <span className="hero-pill">{memberCount} people</span>
+        <Link href={`/groups/${groupId}/people` as Route} className="hero-pill">
+          {memberCount} people
+        </Link>
       </div>
     </header>
   );
